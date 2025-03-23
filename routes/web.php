@@ -31,6 +31,10 @@ Route::middleware([
         return view('menu.CrearAreas');
     })->name('crearAreas');
 
+    Route::get('/inventario-equipos', function () {
+        return view('menu.inventarioEquipos');
+    })->name('inventarioEquipos');
+
     // Rutas para las novedades de las areas
     Route::get('/areas/create', [AreaController::class, 'create'])->name('areas.create');
     Route::post('/areas', [AreaController::class, 'store'])->name('areas.store');
