@@ -6,6 +6,7 @@ use App\Models\Area;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 
 class AreaController extends Controller
@@ -14,18 +15,6 @@ class AreaController extends Controller
     {
         try {
             $areas = Area::all();
-            
-            // Asegurarse de que las imágenes sean un array válido
-            $areas = $areas->map(function($area) {
-                if ($area->imagenes) {
-                    // Si ya es un array, lo dejamos así
-                    $area->imagenes = is_array($area->imagenes) ? $area->imagenes : json_decode($area->imagenes);
-                } else {
-                    $area->imagenes = [];
-                }
-                return $area;
-            });
-
             return view('areas.index', compact('areas'));
         } catch (\Exception $e) {
             Log::error('Error en AreaController@index: ' . $e->getMessage());
@@ -49,24 +38,30 @@ class AreaController extends Controller
             'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $imagenesPaths = [];
-        
-        if ($request->hasFile('imagenes')) {
-            foreach ($request->file('imagenes') as $imagen) {
-                $imagenPath = $imagen->store('areas', 'public');
-                $imagenesPaths[] = $imagenPath;
+        try {
+            $imagenesPaths = [];
+            
+            if ($request->hasFile('imagenes')) {
+                foreach ($request->file('imagenes') as $imagen) {
+                    $imagenPath = $imagen->store('areas', 'public');
+                    $imagenesPaths[] = $imagenPath;
+                }
             }
+
+            Area::create([
+                'area' => $request->area,
+                'torre' => $request->torre,
+                'piso' => $request->piso,
+                'descripcion' => $request->descripcion,
+                'imagenes' => $imagenesPaths,
+                'usuario_reportador' => Auth::user()->name
+            ]);
+
+            return redirect()->route('novedades')->with('success', 'Área creada exitosamente');
+        } catch (\Exception $e) {
+            Log::error('Error en AreaController@store: ' . $e->getMessage());
+            return back()->with('error', 'Ha ocurrido un error al crear el área.');
         }
-
-        Area::create([
-            'area' => $request->area,
-            'torre' => $request->torre,
-            'piso' => $request->piso,
-            'descripcion' => $request->descripcion,
-            'imagenes' => $imagenesPaths
-        ]);
-
-        return redirect()->route('areas.index')->with('success', 'Área creada exitosamente');
     }
 
     public function edit(Area $area)
@@ -117,5 +112,10 @@ class AreaController extends Controller
         $area->delete();
 
         return redirect()->route('areas.index')->with('success', 'Área eliminada exitosamente');
+    }
+
+    public function show(Area $area)
+    {
+        return view('areas.show', compact('area'));
     }
 } 

@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('area');
             $table->text('descripcion');
             $table->json('imagenes')->nullable();
+            $table->string('usuario_reportador');
             $table->timestamps();
+            $table->timestamp('fecha_hora_creacion')->useCurrent();
         });
     }
 

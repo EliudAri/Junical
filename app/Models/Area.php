@@ -11,7 +11,8 @@ class Area extends Model
         'torre',
         'piso',
         'descripcion',
-        'imagenes'
+        'imagenes',
+        'usuario_reportador'
     ];
 
     protected $casts = [
