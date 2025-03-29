@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AreaController;
 use App\Models\Area;
+use \App\Models\User;
+
 
 
 Route::get('/', function () {
@@ -23,6 +25,11 @@ Route::middleware([
         return view('novedades', compact('areas'));
     })->name('novedades');
 
+    Route::get('/usuarios', function () {
+        $usuarios = User::all();
+        return view('menu.usuarios', compact('usuarios'));
+    })->name('usuarios');
+
     Route::get('/rondas', function () {
         return view('rondas');
     })->name('rondas');
@@ -34,6 +41,8 @@ Route::middleware([
     Route::get('/inventario-equipos', function () {
         return view('menu.inventarioEquipos');
     })->name('inventarioEquipos');
+
+
 
     // Rutas para las novedades de las areas
     Route::get('/areas/create', [AreaController::class, 'create'])->name('areas.create');
