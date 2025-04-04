@@ -21,9 +21,7 @@ class CalendarEventController extends Controller
                     'title' => $event->title,
                     'start' => $event->start->toISOString(),
                     'end' => $event->end->toISOString(),
-                    'color' => $event->color,
-                    'repeat_type' => $event->repeat_type,
-                    'repeat_days' => $event->repeat_days
+                    'color' => $event->color
                 ];
             }));
         } catch (\Exception $e) {
@@ -43,9 +41,7 @@ class CalendarEventController extends Controller
                 'start_time' => 'required|date_format:H:i',
                 'end' => 'required|date',
                 'end_time' => 'required|date_format:H:i',
-                'color' => 'required|string',
-                'repeat_type' => 'nullable|string',
-                'repeat_days' => 'nullable'
+                'color' => 'required|string'
             ]);
 
             $event = CalendarEvent::create($validated);
@@ -69,7 +65,7 @@ class CalendarEventController extends Controller
                 'title' => 'sometimes|string',
                 'color' => 'sometimes|string',
                 'start_time' => 'sometimes|date_format:H:i',
-                'end_time' => 'sometimes|date_format:H:i',
+                'end_time' => 'sometimes|date_format:H:i'
             ]);
 
             $event->update($validated);

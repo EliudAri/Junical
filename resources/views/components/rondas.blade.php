@@ -111,7 +111,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         title: event.title,
                         start: event.start,
                         end: event.end,
-                        color: event.color
+                        color: event.color,
+                        start_time: event.start_time,
+                        end_time: event.end_time
                     }));
                     successCallback(formattedEvents);
                 })
