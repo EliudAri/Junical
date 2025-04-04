@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AreaController;
 use App\Models\Area;
 use \App\Models\User;
+use App\Http\Controllers\CalendarEventController;
 
 
 
@@ -33,7 +34,7 @@ Route::middleware([
     Route::get('/rondas', function () {
         return view('rondas');
     })->name('rondas');
-// DATO IMPORTANTE DONDE ESTA EL ROUTE::GET ESE NOMBRE DE /crear-areas es peronalizable, LO QUE NO SE CAMBIA ES LA RUTA REAL QUE ES EL RETURN VIEW QUE ESE SI ES LA RUTA REAL, AH Y EL NOMBRE QUE SE LE COLOCA EN NAME crearAreas
+    // DATO IMPORTANTE DONDE ESTA EL ROUTE::GET ESE NOMBRE DE /crear-areas es peronalizable, LO QUE NO SE CAMBIA ES LA RUTA REAL QUE ES EL RETURN VIEW QUE ESE SI ES LA RUTA REAL, AH Y EL NOMBRE QUE SE LE COLOCA EN NAME crearAreas
     Route::get('/crear-areas', function () {
         return view('menu.CrearAreas');
     })->name('crearAreas');
@@ -54,5 +55,12 @@ Route::middleware([
     Route::get('/areas', [AreaController::class, 'index'])->name('areas.index');
     // Fin rutas areas
 
-    
+    // Rutas para el calendario
+    Route::get('/api/events', [CalendarEventController::class, 'index']);
+    Route::post('/api/events', [CalendarEventController::class, 'store']);
+    Route::put('/api/events/{event}', [CalendarEventController::class, 'update']);
+    Route::delete('/api/events/{event}', [CalendarEventController::class, 'destroy']);
 });
+
+
+

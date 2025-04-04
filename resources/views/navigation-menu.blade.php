@@ -24,13 +24,13 @@
                          @mouseenter="open = true" 
                          @mouseleave="open = false" 
                          class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link href="{{ route('novedades') }}" 
+                        <x-nav-link href="{{ route('rondas') }}" 
                             :active="request()->routeIs(['novedades', 'crearAreas', 'rondas'])" 
                             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
-                            {{ __('Novedades Rondas') }}
+                            {{ __('Rondas') }}
                             <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
@@ -50,9 +50,9 @@
                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('crearAreas') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
                                    {{ __('Crear novedad') }}
                                 </a>
-                                <a href="{{ route('rondas') }}" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('rondas') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
-                                   {{ __('Rondas') }}
+                                <a href="{{ route('novedades') }}" 
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('novedades') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
+                                   {{ __('Novedades') }}
                                 </a>
                             </div>
                         </div>
