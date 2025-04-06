@@ -20,12 +20,13 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <div x-data="{ open: false }" 
-                         @mouseenter="open = true" 
-                         @mouseleave="open = false" 
-                         class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link href="{{ route('rondas') }}" 
-                            :active="request()->routeIs(['novedades', 'crearAreas', 'rondas'])" 
+                    <!-- NOVEDADES -->
+                    <div x-data="{ open: false }"
+                        @mouseenter="open = true"
+                        @mouseleave="open = false"
+                        class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link href="{{ route('rondas') }}"
+                            :active="request()->routeIs(['rondas','crearAreas','novedades'])"
                             class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
@@ -46,24 +47,54 @@
                             x-transition:leave-end="transform opacity-0 scale-95"
                             class="absolute z-50 mt-16 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                             <div class="py-1">
-                                <a href="{{ route('crearAreas') }}" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('crearAreas') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
-                                   {{ __('Crear novedad') }}
+                                <a href="{{ route('crearAreas') }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('crearAreas') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
+                                    {{ __('Crear novedad') }}
                                 </a>
-                                <a href="{{ route('novedades') }}" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('novedades') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
-                                   {{ __('Novedades') }}
+                                <a href="{{ route('novedades') }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('novedades') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
+                                    {{ __('Novedades') }}
                                 </a>
                             </div>
                         </div>
                     </div>
+                    <!-- FIN NOVEDADES -->
 
-                    <x-nav-link href="{{ route('inventarioEquipos') }}" :active="request()->routeIs('inventarioEquipos')" class="flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        {{ __('Inventario Equipos') }}
-                    </x-nav-link>
+                    <!-- INVENTARIO -->
+                    <div x-data="{ open: false }"
+                        @mouseenter="open = true"
+                        @mouseleave="open = false"
+                        class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link href="{{ route('inventarioEquipos') }}"
+                            :active="request()->routeIs(['inventarioEquipos','create'])"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            {{ __('Inventario Equipos') }}
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </x-nav-link>
+
+                        <div x-show="open"
+                            style="display: none;"
+                            x-transition:enter="transition ease-out duration-100"
+                            x-transition:enter-start="transform opacity-0 scale-95"
+                            x-transition:enter-end="transform opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-75"
+                            x-transition:leave-start="transform opacity-100 scale-100"
+                            x-transition:leave-end="transform opacity-0 scale-95"
+                            class="absolute z-50 mt-16 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div class="py-1">
+                                <a href="{{ route('create') }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('create') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
+                                    {{ __('Crear Inventario') }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FIN INVENTARIO -->
 
                     <x-nav-link href="{{ route('usuarios') }}" :active="request()->routeIs('usuarios')" class="flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
