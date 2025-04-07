@@ -1,1 +1,1 @@
-web: php artisan serve --host=0.0.0.0 --port=8080
+CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
