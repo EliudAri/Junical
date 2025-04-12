@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
             $table->enum('torre', ['1', '2', '3']);
-            $table->enum('piso', ['1', '2', '3', '4', '5', '6', '7']);
+            $table->enum('piso', ['s2', 's1', 'ss','1', '2', '3', '4', '5', '6', '7']);
             $table->string('area');
             $table->text('descripcion');
             $table->json('imagenes')->nullable();

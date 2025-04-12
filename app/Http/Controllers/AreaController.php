@@ -32,7 +32,7 @@ class AreaController extends Controller
         $request->validate([
             'area' => 'required|string|max:255',
             'torre' => 'required|in:1,2,3',
-            'piso' => 'required|in:1,2,3,4,5,6,7',
+            'piso' => 'required|in:s1,s2,ss,1,2,3,4,5,6,7',
             'descripcion' => 'required|string',
             'imagenes' => 'required|array',
             'imagenes.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
