@@ -5,9 +5,10 @@ use App\Http\Controllers\AreaController;
 use App\Models\Area;
 use \App\Models\User;
 use \App\Models\Inventario;
+use \App\Models\CreacionUsuarios;
 use App\Http\Controllers\CalendarEventController;
 use App\Http\Controllers\InventarioController;
-
+use App\Http\Controllers\CreacionUsuarioController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -31,6 +32,7 @@ Route::middleware([
         return view('rondas');
     })->name('rondas');
 
+    
 
     //-----------RUTAS PARA EL MENU, ESTO LLAMA A LAS VISTAS QUE SE CREAN EN LA CARPETA MENU-----------
 
@@ -52,6 +54,12 @@ Route::middleware([
         $usuarios = User::all();
         return view('menu.usuarios', compact('usuarios'));
     })->name('usuarios');
+
+    Route::get('/CreacionUsuario', function () {
+        return view('menu.CreacionUsuario');
+    })->name('CreacionUsuario');
+
+
 
     //-----------FIN RUTAS PARA EL MENU-----------
 
@@ -80,6 +88,9 @@ Route::middleware([
     Route::post('/inventario', [InventarioController::class, 'store'])->name('inventario.store');
     Route::get('/inventario', [InventarioController::class, 'index'])->name('inventario.index');
     // FIN RUTAS INVENTARIO
+
+    Route::get('/creacionusuarios', [CreacionUsuarioController::class, 'create'])->name('creacionusuarios.create');
+    Route::post('/creacionusuarios', [CreacionUsuarioController::class, 'store'])->name('creacionusuarios.store');
 
     //-----------FIN RUTAS QUE MANEJAN LOS DATOS-----------
     
