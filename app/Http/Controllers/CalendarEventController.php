@@ -6,6 +6,7 @@ use App\Models\CalendarEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use Carbon\Carbon;
 
 class CalendarEventController extends Controller
 {
@@ -16,12 +17,16 @@ class CalendarEventController extends Controller
             Log::info('Datos recibidos...', $events->toArray());
 
             return response()->json($events->map(function ($event) {
+                $endDate = Carbon::parse($event->end)->endOfDay();
+                
                 return [
                     'id' => $event->id,
                     'title' => $event->title,
-                    'start' => $event->start->toISOString(),
-                    'end' => $event->end->toISOString(),
-                    'color' => $event->color
+                    'start' => Carbon::parse($event->start)->startOfDay()->toISOString(),
+                    'end' => $endDate->toISOString(),
+                    'color' => $event->color,
+                    'display' => 'background',
+                    'allDay' => true
                 ];
             }));
         } catch (\Exception $e) {
@@ -46,7 +51,15 @@ class CalendarEventController extends Controller
 
             $event = CalendarEvent::create($validated);
 
-            return response()->json($event, 201);
+            return response()->json([
+                'id' => $event->id,
+                'title' => $event->title,
+                'start' => Carbon::parse($event->start)->startOfDay()->toISOString(),
+                'end' => Carbon::parse($event->end)->startOfDay()->toISOString(),
+                'color' => $event->color,
+                'display' => 'background',
+                'allDay' => true
+            ], 201);
         } catch (\Exception $e) {
             Log::error('Error al crear evento: ' . $e->getMessage());
             return response()->json([
@@ -68,8 +81,21 @@ class CalendarEventController extends Controller
                 'end_time' => 'sometimes|date_format:H:i'
             ]);
 
+            if (isset($validated['end'])) {
+                $validated['end'] = Carbon::parse($validated['end'])->endOfDay()->format('Y-m-d');
+            }
+
             $event->update($validated);
-            return response()->json($event);
+
+            return response()->json([
+                'id' => $event->id,
+                'title' => $event->title,
+                'start' => Carbon::parse($event->start)->startOfDay()->toISOString(),
+                'end' => Carbon::parse($event->end)->endOfDay()->toISOString(),
+                'color' => $event->color,
+                'display' => 'background',
+                'allDay' => true
+            ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

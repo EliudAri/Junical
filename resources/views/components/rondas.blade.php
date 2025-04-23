@@ -95,27 +95,33 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         editable: true,
         droppable: true,
+        selectable: true,
+        select: function(info) {
+            // Ajustar la fecha final para que no incluya el día extra
+            const endDate = new Date(info.end);
+            endDate.setDate(endDate.getDate() - 1);
+            
+            document.getElementById('eventStartDate').value = info.startStr;
+            document.getElementById('eventEndDate').value = endDate.toISOString().split('T')[0];
+            openModal(null, true);
+        },
         buttonText: {
             today: 'Hoy',
             month: 'Mes',
             week: 'Semana',
             day: 'Día'
         },
-        // DATOS QUE SE MUESTRAN EN LA VISTA DEL CALENDARIO
         events: function(fetchInfo, successCallback, failureCallback) {
             fetch('/api/events')
                 .then(response => response.json())
                 .then(data => {
-                    const formattedEvents = data.map(event => ({
+                    successCallback(data.map(event => ({
                         id: event.id,
                         title: event.title,
                         start: event.start,
                         end: event.end,
-                        color: event.color,
-                        start_time: event.start_time,
-                        end_time: event.end_time
-                    }));
-                    successCallback(formattedEvents);
+                        color: event.color
+                    })));
                 })
                 .catch(error => {
                     console.error('Error al cargar eventos:', error);
@@ -179,7 +185,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         if (addToCalendar) {
-            calendar.addEvent(eventData);
             saveEventToDatabase(eventData);
         } else {
             addEventToExternalList(eventData);
@@ -221,22 +226,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function createRecurringEvents(baseEvent, weekDays) {
-     
-        // for (let i = 0; i < 4; i++) {
-            weekDays.forEach(day => {
-                const eventCopy = { ...baseEvent };
-                // Ajustar fecha según el día de la semana
-                const start = new Date(baseEvent.start);
-                start.setDate(start.getDate() + ((day - start.getDay() + 7) % 7));
-                eventCopy.start = start.toISOString();
-                
-                const end = new Date(baseEvent.end);
-                end.setDate(end.getDate() + ((day - end.getDay() + 7) % 7));
-                eventCopy.end = end.toISOString();
+        weekDays.forEach(day => {
+            const eventCopy = { ...baseEvent };
+            const start = new Date(baseEvent.start);
+            start.setDate(start.getDate() + ((day - start.getDay() + 7) % 7));
+            eventCopy.start = start.toISOString();
+            
+            const end = new Date(baseEvent.end);
+            end.setDate(end.getDate() + ((day - end.getDay() + 7) % 7));
+            eventCopy.end = end.toISOString();
 
-                calendar.addEvent(eventCopy);
-            });
-        // }
+            calendar.addEvent(eventCopy);
+        });
     }
 
     function saveEventToDatabase(eventData) {
@@ -244,25 +245,18 @@ document.addEventListener('DOMContentLoaded', function() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
             },
             body: JSON.stringify(eventData)
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => {
-                    throw new Error(err.message || 'Error del servidor');
-                });
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log('Evento guardado:', data);
+            calendar.refetchEvents();
+            alert('Evento guardado correctamente');
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al guardar el evento: ' + error.message);
+            alert('Error al guardar el evento');
         });
     }
 
