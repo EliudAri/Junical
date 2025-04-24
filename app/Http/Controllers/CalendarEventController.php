@@ -14,19 +14,16 @@ class CalendarEventController extends Controller
     {
         try {
             $events = CalendarEvent::all();
-            Log::info('Datos recibidos...', $events->toArray());
-
+            
             return response()->json($events->map(function ($event) {
-                $endDate = Carbon::parse($event->end)->endOfDay();
-                
                 return [
                     'id' => $event->id,
                     'title' => $event->title,
-                    'start' => Carbon::parse($event->start)->startOfDay()->toISOString(),
-                    'end' => $endDate->toISOString(),
-                    'color' => $event->color,
-                    'display' => 'background',
-                    'allDay' => true
+                    'start' => $event->start->format('Y-m-d'),
+                    'end' => $event->end->format('Y-m-d'),
+                    'start_time' => $event->start_time ? $event->start_time->format('H:i') : '00:00',
+                    'end_time' => $event->end_time ? $event->end_time->format('H:i') : '00:00',
+                    'color' => $event->color
                 ];
             }));
         } catch (\Exception $e) {
@@ -38,14 +35,12 @@ class CalendarEventController extends Controller
     public function store(Request $request)
     {
         try {
-            Log::info('Datos recibidos:', $request->all());
-
             $validated = $request->validate([
                 'title' => 'required|string',
                 'start' => 'required|date',
-                'start_time' => 'required|date_format:H:i',
+                'start_time' => 'required',
                 'end' => 'required|date',
-                'end_time' => 'required|date_format:H:i',
+                'end_time' => 'required',
                 'color' => 'required|string'
             ]);
 
@@ -54,11 +49,10 @@ class CalendarEventController extends Controller
             return response()->json([
                 'id' => $event->id,
                 'title' => $event->title,
-                'start' => Carbon::parse($event->start)->startOfDay()->toISOString(),
-                'end' => Carbon::parse($event->end)->startOfDay()->toISOString(),
+                'start' => $event->start . ' ' . $event->start_time,
+                'end' => $event->end . ' ' . $event->end_time,
                 'color' => $event->color,
-                'display' => 'background',
-                'allDay' => true
+                'allDay' => false
             ], 201);
         } catch (\Exception $e) {
             Log::error('Error al crear evento: ' . $e->getMessage());
@@ -77,24 +71,19 @@ class CalendarEventController extends Controller
                 'end' => 'sometimes|date',
                 'title' => 'sometimes|string',
                 'color' => 'sometimes|string',
-                'start_time' => 'sometimes|date_format:H:i',
-                'end_time' => 'sometimes|date_format:H:i'
+                'start_time' => 'sometimes',
+                'end_time' => 'sometimes'
             ]);
-
-            if (isset($validated['end'])) {
-                $validated['end'] = Carbon::parse($validated['end'])->endOfDay()->format('Y-m-d');
-            }
 
             $event->update($validated);
 
             return response()->json([
                 'id' => $event->id,
                 'title' => $event->title,
-                'start' => Carbon::parse($event->start)->startOfDay()->toISOString(),
-                'end' => Carbon::parse($event->end)->endOfDay()->toISOString(),
+                'start' => $event->start . ' ' . $event->start_time,
+                'end' => $event->end . ' ' . $event->end_time,
                 'color' => $event->color,
-                'display' => 'background',
-                'allDay' => true
+                'allDay' => false
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

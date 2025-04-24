@@ -96,11 +96,75 @@ document.addEventListener('DOMContentLoaded', function() {
         editable: true,
         droppable: true,
         selectable: true,
+        displayEventTime: true,
+        eventTimeFormat: {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        },
+        events: function(fetchInfo, successCallback, failureCallback) {
+            fetch('/api/events')
+                .then(response => response.json())
+                .then(data => {
+                    const events = data.map(event => {
+                        console.log('Procesando evento:', event);
+                        try {
+                            // Validar que tengamos todos los datos necesarios
+                            if (!event.start || !event.end) {
+                                console.error('Evento sin fecha de inicio o fin:', event);
+                                return null;
+                            }
+
+                            // Asegurarnos de que tengamos valores por defecto para las horas
+                            const start_time = event.start_time || '00:00';
+                            const end_time = event.end_time || '00:00';
+
+                            const startParts = event.start.split('-');
+                            const endParts = event.end.split('-');
+                            const startTimeParts = start_time.split(':');
+                            const endTimeParts = end_time.split(':');
+
+                            const startDate = new Date(
+                                parseInt(startParts[0]),
+                                parseInt(startParts[1]) - 1,
+                                parseInt(startParts[2]),
+                                parseInt(startTimeParts[0]),
+                                parseInt(startTimeParts[1])
+                            );
+
+                            const endDate = new Date(
+                                parseInt(endParts[0]),
+                                parseInt(endParts[1]) - 1,
+                                parseInt(endParts[2]),
+                                parseInt(endTimeParts[0]),
+                                parseInt(endTimeParts[1])
+                            );
+
+                            return {
+                                id: event.id,
+                                title: event.title,
+                                start: startDate,
+                                end: endDate,
+                                color: event.color,
+                                allDay: false
+                            };
+                        } catch (error) {
+                            console.error('Error procesando evento:', event, error);
+                            return null;
+                        }
+                    }).filter(event => event !== null); // Filtrar eventos inválidos
+
+                    console.log('Eventos procesados:', events);
+                    successCallback(events);
+                })
+                .catch(error => {
+                    console.error('Error al cargar eventos:', error);
+                    failureCallback(error);
+                });
+        },
         select: function(info) {
-            // Ajustar la fecha final para que no incluya el día extra
             const endDate = new Date(info.end);
             endDate.setDate(endDate.getDate() - 1);
-            
             document.getElementById('eventStartDate').value = info.startStr;
             document.getElementById('eventEndDate').value = endDate.toISOString().split('T')[0];
             openModal(null, true);
@@ -111,31 +175,12 @@ document.addEventListener('DOMContentLoaded', function() {
             week: 'Semana',
             day: 'Día'
         },
-        events: function(fetchInfo, successCallback, failureCallback) {
-            fetch('/api/events')
-                .then(response => response.json())
-                .then(data => {
-                    successCallback(data.map(event => ({
-                        id: event.id,
-                        title: event.title,
-                        start: event.start,
-                        end: event.end,
-                        color: event.color
-                    })));
-                })
-                .catch(error => {
-                    console.error('Error al cargar eventos:', error);
-                    failureCallback(error);
-                });
-        },
         eventClick: function(info) {
-            // Mostrar información del evento en un modal
             showEventDetails(info.event);
         },
         dateClick: function(info) {
             openModal(info.dateStr, true);
         },
-        // Manejar el evento de mover
         eventDrop: function(info) {
             updateEventInDatabase(info.event);
         }
@@ -165,9 +210,9 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const title = document.getElementById('eventTitle').value.trim();
         const start = document.getElementById('eventStartDate').value;
-        const startTime = document.getElementById('eventStartTime').value || '00:00';
+        const startTime = document.getElementById('eventStartTime').value;
         const end = document.getElementById('eventEndDate').value;
-        const endTime = document.getElementById('eventEndTime').value || '00:00';
+        const endTime = document.getElementById('eventEndTime').value;
         const color = document.getElementById('eventColor').value;
 
         if (!title || !start || !end || !color) {
@@ -261,13 +306,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateEventInDatabase(event) {
+        const startTime = event.start.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const endTime = event.end ? event.end.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false }) : startTime;
+
         const updatedData = {
-            start: event.start.toISOString(),
-            end: event.end ? event.end.toISOString() : null,
+            start: event.start.toISOString().split('T')[0],
+            end: event.end ? event.end.toISOString().split('T')[0] : event.start.toISOString().split('T')[0],
             title: event.title,
             color: event.backgroundColor,
-            start_time: event.start_time || '00:00',
-            end_time: event.end_time || '00:00'
+            start_time: startTime,
+            end_time: endTime
         };
 
         fetch(`/api/events/${event.id}`, {
@@ -298,10 +346,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Nueva función para mostrar detalles del evento
     function showEventDetails(event) {
+        const formatDateTime = (date) => {
+            if (!date) return 'No especificada';
+            return date.toLocaleString('es-ES', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        };
+
         const modalContent = `
             <h3 class="text-lg font-semibold mb-4">${event.title}</h3>
-            <p><strong>Fecha de Inicio:</strong> ${new Date(event.start).toLocaleString()}</p>
-            <p><strong>Fecha de Fin:</strong> ${event.end ? new Date(event.end).toLocaleString() : 'No especificada'}</p>
+            <p><strong>Fecha y Hora de Inicio:</strong> ${formatDateTime(event.start)}</p>
+            <p><strong>Fecha y Hora de Fin:</strong> ${formatDateTime(event.end)}</p>
             <p><strong>Color:</strong> <span style="display:inline-block; width: 20px; height: 20px; background-color: ${event.backgroundColor};"></span></p>
         `;
         const modal = document.createElement('div');
