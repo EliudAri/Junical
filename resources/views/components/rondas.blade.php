@@ -97,11 +97,17 @@ document.addEventListener('DOMContentLoaded', function() {
         droppable: true,
         selectable: true,
         displayEventTime: true,
+        displayEventEnd: true,
         eventTimeFormat: {
-            hour: '2-digit',
+            hour: 'numeric',
             minute: '2-digit',
-            hour12: false
+            meridiem: 'short',
+            hour12: true
         },
+        slotEventOverlap: false,
+        eventOrder: 'start',
+        eventOverlap: true,
+        eventOrderStrict: true,
         events: function(fetchInfo, successCallback, failureCallback) {
             fetch('/api/events')
                 .then(response => response.json())
@@ -109,35 +115,48 @@ document.addEventListener('DOMContentLoaded', function() {
                     const events = data.map(event => {
                         console.log('Procesando evento:', event);
                         try {
-                            // Validar que tengamos todos los datos necesarios
                             if (!event.start || !event.end) {
                                 console.error('Evento sin fecha de inicio o fin:', event);
                                 return null;
                             }
 
-                            // Asegurarnos de que tengamos valores por defecto para las horas
-                            const start_time = event.start_time || '00:00';
-                            const end_time = event.end_time || '00:00';
+                            const start_time = event.start_time || '12:00 AM';
+                            const end_time = event.end_time || '12:00 AM';
+
+                            // Separar la hora y el meridiano (AM/PM)
+                            const startTimeParts = start_time.split(' ');
+                            const endTimeParts = end_time.split(' ');
+                            const startHourMin = startTimeParts[0].split(':');
+                            const endHourMin = endTimeParts[0].split(':');
+
+                            // Convertir a 24 horas para el objeto Date
+                            let startHour = parseInt(startHourMin[0]);
+                            let endHour = parseInt(endHourMin[0]);
+                            
+                            // Ajustar las horas si es PM
+                            if (startTimeParts[1] === 'PM' && startHour !== 12) startHour += 12;
+                            if (endTimeParts[1] === 'PM' && endHour !== 12) endHour += 12;
+                            // Ajustar para medianoche
+                            if (startTimeParts[1] === 'AM' && startHour === 12) startHour = 0;
+                            if (endTimeParts[1] === 'AM' && endHour === 12) endHour = 0;
 
                             const startParts = event.start.split('-');
                             const endParts = event.end.split('-');
-                            const startTimeParts = start_time.split(':');
-                            const endTimeParts = end_time.split(':');
 
                             const startDate = new Date(
                                 parseInt(startParts[0]),
                                 parseInt(startParts[1]) - 1,
                                 parseInt(startParts[2]),
-                                parseInt(startTimeParts[0]),
-                                parseInt(startTimeParts[1])
+                                startHour,
+                                parseInt(startHourMin[1])
                             );
 
                             const endDate = new Date(
                                 parseInt(endParts[0]),
                                 parseInt(endParts[1]) - 1,
                                 parseInt(endParts[2]),
-                                parseInt(endTimeParts[0]),
-                                parseInt(endTimeParts[1])
+                                endHour,
+                                parseInt(endHourMin[1])
                             );
 
                             return {
@@ -152,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             console.error('Error procesando evento:', event, error);
                             return null;
                         }
-                    }).filter(event => event !== null); // Filtrar eventos inválidos
+                    }).filter(event => event !== null);
 
                     console.log('Eventos procesados:', events);
                     successCallback(events);
@@ -352,9 +371,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
-                hour: '2-digit',
+                hour: 'numeric',
                 minute: '2-digit',
-                hour12: false
+                hour12: true
             });
         };
 

@@ -21,8 +21,8 @@ class CalendarEventController extends Controller
                     'title' => $event->title,
                     'start' => $event->start->format('Y-m-d'),
                     'end' => $event->end->format('Y-m-d'),
-                    'start_time' => $event->start_time ? $event->start_time->format('H:i') : '00:00',
-                    'end_time' => $event->end_time ? $event->end_time->format('H:i') : '00:00',
+                    'start_time' => $event->start_time ? $event->start_time->format('h:i A') : '12:00 AM',
+                    'end_time' => $event->end_time ? $event->end_time->format('h:i A') : '12:00 AM',
                     'color' => $event->color
                 ];
             }));
