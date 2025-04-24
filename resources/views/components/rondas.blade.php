@@ -105,7 +105,17 @@ document.addEventListener('DOMContentLoaded', function() {
             hour12: true
         },
         slotEventOverlap: false,
-        eventOrder: 'start',
+        eventOrder: function(a, b) {
+            const startTimeA = a.start_time ? a.start_time.split(' ')[0].split(':') : ['00', '00'];
+            const startTimeB = b.start_time ? b.start_time.split(' ')[0].split(':') : ['00', '00'];
+            const hourA = parseInt(startTimeA[0]);
+            const hourB = parseInt(startTimeB[0]);
+            
+            if (hourA === hourB) {
+                return parseInt(startTimeA[1]) - parseInt(startTimeB[1]);
+            }
+            return hourA - hourB;
+        },
         eventOverlap: true,
         eventOrderStrict: true,
         events: function(fetchInfo, successCallback, failureCallback) {
