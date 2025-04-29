@@ -1,22 +1,7 @@
 <div class="max-w-7xl mx-auto p-6">
     <div class="flex gap-4">
-        <!-- Panel lateral de eventos -->
-        <div class="w-64 bg-gray-800 rounded-lg p-4">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-white font-semibold">Eventos Disponibles</h2>
-                <button id="newEventBtn" 
-                        class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded text-sm">
-                    + Nuevo
-                </button>
-            </div>
-            <div id="external-events">
-                <p class="text-gray-400 text-sm italic mb-2">Arrastra estos eventos al calendario</p>
-                <!-- Los eventos se agregarán aquí dinámicamente -->
-            </div>
-        </div>
-
         <!-- Calendario -->
-        <div class="flex-1">
+        <div class="w-full">
             <div id='calendar' class="bg-white rounded-lg shadow"></div>
         </div>
     </div>
@@ -80,9 +65,30 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/locales/es.js'></script>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/main.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Función para mostrar notificaciones Toast
+    function showToast(icon, title) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        Toast.fire({
+            icon: icon,
+            title: title
+        });
+    }
+
     // Inicializar el calendario
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -94,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
         editable: true,
-        droppable: true,
         selectable: true,
         displayEventTime: true,
         displayEventEnd: true,
@@ -218,16 +223,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Manejar el modal
     const modal = document.getElementById('eventModal');
-    const newEventBtn = document.getElementById('newEventBtn');
     const cancelBtn = document.getElementById('cancelBtn');
     const newEventForm = document.getElementById('newEventForm');
-    const externalEvents = document.getElementById('external-events');
     let addToCalendar = false;
-
-    // Abrir modal
-    newEventBtn.addEventListener('click', () => {
-        openModal(null, false);
-    });
 
     // Cerrar modal
     cancelBtn.addEventListener('click', () => {
@@ -245,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const color = document.getElementById('eventColor').value;
 
         if (!title || !start || !end || !color) {
-            alert('Por favor, completa todos los campos requeridos.');
+            showToast('error', 'Por favor, completa todos los campos requeridos.');
             return;
         }
 
@@ -258,12 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
             color: color
         };
 
-        if (addToCalendar) {
-            saveEventToDatabase(eventData);
-        } else {
-            addEventToExternalList(eventData);
-        }
-
+        saveEventToDatabase(eventData);
         modal.classList.add('hidden');
         newEventForm.reset();
     });
@@ -274,23 +267,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         addToCalendar = toCalendar;
         modal.classList.remove('hidden');
-    }
-
-    function addEventToExternalList(eventData) {
-        const eventDiv = document.createElement('div');
-        eventDiv.className = 'fc-event p-2 mb-2 rounded cursor-pointer text-white';
-        eventDiv.style.backgroundColor = eventData.backgroundColor;
-        eventDiv.innerHTML = eventData.title;
-
-        new FullCalendar.Draggable(eventDiv, {
-            eventData: {
-                title: eventData.title,
-                backgroundColor: eventData.backgroundColor,
-                borderColor: eventData.borderColor
-            }
-        });
-
-        externalEvents.appendChild(eventDiv);
     }
 
     function calculateEndTime(date, time, durationMinutes) {
@@ -326,11 +302,11 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             calendar.refetchEvents();
-            alert('Evento guardado correctamente');
+            showToast('success', 'Evento guardado correctamente');
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al guardar el evento');
+            showToast('error', 'Error al guardar el evento');
         });
     }
 
@@ -366,10 +342,11 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             console.log('Evento actualizado:', data);
+            showToast('success', 'Evento actualizado correctamente');
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al actualizar el evento: ' + error.message);
+            showToast('error', 'Error al actualizar el evento: ' + error.message);
         });
     }
 
@@ -387,23 +364,16 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         };
 
-        const modalContent = `
-            <h3 class="text-lg font-semibold mb-4">${event.title}</h3>
-            <p><strong>Fecha y Hora de Inicio:</strong> ${formatDateTime(event.start)}</p>
-            <p><strong>Fecha y Hora de Fin:</strong> ${formatDateTime(event.end)}</p>
-            <p><strong>Color:</strong> <span style="display:inline-block; width: 20px; height: 20px; background-color: ${event.backgroundColor};"></span></p>
-        `;
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
-        modal.innerHTML = `
-            <div class="bg-white rounded-lg w-[400px] p-6">
-                ${modalContent}
-                <div class="flex justify-end mt-4">
-                    <button class="px-4 py-2 bg-blue-500 text-white rounded" onclick="this.parentElement.parentElement.parentElement.remove();">Cerrar</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
+        Swal.fire({
+            title: event.title,
+            html: `
+                <p><strong>Fecha y Hora de Inicio:</strong> ${formatDateTime(event.start)}</p>
+                <p><strong>Fecha y Hora de Fin:</strong> ${formatDateTime(event.end)}</p>
+                <p><strong>Color:</strong> <span style="display:inline-block; width: 20px; height: 20px; background-color: ${event.backgroundColor};"></span></p>
+            `,
+            showCloseButton: true,
+            showConfirmButton: false
+        });
     }
 });
 </script>

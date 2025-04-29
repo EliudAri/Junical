@@ -28,11 +28,11 @@ Route::middleware([
         return view('novedades', compact('areas'));
     })->name('novedades');
 
-    Route::get('/rondas', function () {
-        return view('rondas');
-    })->name('rondas');
+    Route::get('/calendario', function () {
+        return view('calendario');
+    })->name('calendario');
 
-    
+
 
     //-----------RUTAS PARA EL MENU, ESTO LLAMA A LAS VISTAS QUE SE CREAN EN LA CARPETA MENU-----------
 
@@ -59,11 +59,13 @@ Route::middleware([
         return view('menu.CreacionUsuario');
     })->name('CreacionUsuario');
 
-
+    Route::get('/dashboardUsuario', function () {
+        return view('menu.usuarioFinal');
+    })->name('dashboardUsuario');
 
     //-----------FIN RUTAS PARA EL MENU-----------
 
-    
+
 
     //-----------RUTAS QUE MANEJAN LOS DATOS COMO LOS METODOS DE CREATE, STORE, SHOW, EDIT, UPDATE, DESTROY, INDEX-----------
 
@@ -93,5 +95,5 @@ Route::middleware([
     Route::post('/creacionusuarios', [CreacionUsuarioController::class, 'store'])->name('creacionusuarios.store');
 
     //-----------FIN RUTAS QUE MANEJAN LOS DATOS-----------
-    
+
 });
