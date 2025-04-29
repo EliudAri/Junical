@@ -18,7 +18,12 @@
                     <div class="row g-2">
                         <div class="col-lg-3 col-md-3 col-ms-3 col-xs-3">
                             <label for="fecha" class="form-label">Fecha:</label>
-                            <input type="text" class="form-control custom-alert" id="fecha" name="fecha" required value="{{ date('Y-m-d') }}" style="border: none; background: none; padding: 0; width: auto; font-size: 1.2rem; display: inline; margin-left: 10px;" readonly>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text bg-primary text-white" id="basic-addon1">
+                                    <i class="bi bi-calendar-event"></i>
+                                </span>
+                                <input type="text" class="form-control bg-light border-0 fw-bold" id="fecha" name="fecha" required value="{{ date('Y-m-d') }}" readonly style="font-size: 1.2rem;">
+                            </div>
                         </div>
                     </div>
 
@@ -62,7 +67,15 @@
                         </div>
                         <div class="col-lg-4">
                             <label for="tipoDocumento" class="form-label">Tipo de Documento:</label>
-                            <input type="text" class="form-control" id="tipoDocumento" name="tipoDocumento" required>
+                            <select name="tipoDocumento" id="tipoDocumento" class="form-control" required>
+                                <option value="" selected disabled>Seleccione un tipo de documento</option>
+                                <option value="CC">Cédula de Ciudadanía</option>
+                                <option value="TI">Tarjeta de Identidad</option>
+                                <option value="CE">Cédula de Extranjería</option>
+                                <option value="PA">Pasaporte</option>
+                                <option value="RC">Registro Civil</option>
+                        
+                            </select>
                         </div>
                         <div class="col-lg-4">
                             <label for="numeroDocumento" class="form-label">Número de Documento:</label>
@@ -113,14 +126,11 @@
                         <div class="col-lg-6">
                             <label for="tipoProfesion" class="form-label">TIPO PROFESIÓN:</label>
                             <select class="form-control" id="tipoProfesion" name="tipoProfesion" required>
-                                <option value="medico_general">MED. GENERAL</option>
-                                <option value="enfermero_jefe">ENFERMERO JEFE</option>
-                                <option value="aux_enfermeria">AUX. ENFERMERIA</option>
-                                <option value="bacteriologo">BACTERIOLOGO</option>
-                                <option value="odontologo">ODONTOLOGO</option>
-                                <option value="tecnico_radiologia">TÉCNICO RADIOLOGÍA</option>
-                                <option value="aux_laboratorio">AUX. LABORATORIO</option>
-                                <option value="medico_especialista">MED. ESPECIALISTA</option>
+                                <option value="" selected disabled>Seleccione una profesión</option>
+                                <option value="Medico">Médico</option>
+                                <option value="Enfermero">Enfermero</option>
+                                <option value="Odontologo">Odontólogo</option>
+                                
                             </select>
                         </div>
                         <div class="col-lg-6">
@@ -132,6 +142,7 @@
                         <div class="col-lg-6">
                             <label for="tipoVinculacion" class="form-label">TIPO VINCULACIÓN:</label>
                             <select class="form-control" id="tipoVinculacion" name="tipoVinculacion" required>
+                                <option value="" selected disabled>Seleccione una vinculación</option>
                                 <option value="prestacion_servicios">PRESTACION DE SERVICIOS</option>
                                 <option value="evento">EVENTO</option>
                                 <option value="paquete">PAQUETE</option>

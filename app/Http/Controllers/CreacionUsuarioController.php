@@ -26,19 +26,22 @@ class CreacionUsuarioController extends Controller
         'email' => 'required|email|max:255|unique:creacionusuarios',
         'celular' => 'required|string|max:255|unique:creacionusuarios',
         'tipoProfesion' => 'required|string|max:255',
-        'especialidad' => 'nullable|string|max:255',
+        'especialidad' => 'required|string|max:255',
         'tipoVinculacion' => 'required|string|max:255',
-        'cooperativa' => 'nullable|string|max:255',
-        'sociedad' => 'nullable|string|max:255',
-        'otroVinculacion' => 'nullable|string|max:255',
+        'cooperativa' => 'required|string|max:255',
+        'sociedad' => 'required|string|max:255',
+        'otroVinculacion' => 'required|string|max:255',
         'atencionGrupal' => 'required|string',
-        'serviciosOfrecidos' => 'nullable|string',
+        'serviciosOfrecidos' => 'required|string',
     ], [
-        'primerApellido.required' => 'El campo Primer Apellido es obligatorio.',
-        'segundoApellido.required' => 'El campo Segundo Apellido es obligatorio.',
-        'numeroDocumento.unique' => 'El número de documento ya existe.',
-        'email.unique' => 'El email ya existe.',
-        'celular.unique' => 'El celular ya existe.',
+
+        // RESPUESTAS A LAS VALIDACIONES DE CREACION DE USUARIOS HOSVITAL
+        'required' => 'El campo :attribute es obligatorio.',
+        'unique' => 'El campo :attribute ya existe.',
+        'email' => 'El campo :attribute debe ser un correo electrónico válido.',
+        'celular.unique' => 'El campo :attribute ya existe.',
+        'numeroDocumento.unique' => 'El campo :attribute ya existe.',
+
     ]);
         Creacionusuarios::create($request->all());
         return redirect()->back()->with('success', 'Usuario creado exitosamente.');
