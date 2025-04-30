@@ -6,6 +6,9 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -73,5 +76,21 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('inventarios')->insert($inventarios);
+
+        // Sincronizar permisos de vistas antes de asignar al rol
+        Artisan::call('permissions:sync-views');
+
+        // Crear el rol Administrador si no existe
+        $adminRole = Role::firstOrCreate(['name' => 'Administrador', 'guard_name' => 'web']);
+
+        // Obtener todos los permisos y asignarlos al rol
+        $allPermissions = Permission::pluck('name')->toArray();
+        $adminRole->syncPermissions($allPermissions);
+
+        // Asignar el rol al usuario Eliud
+        $user = User::where('email', 'eliudarias945@gmail.com')->first();
+        if ($user) {
+            $user->assignRole('Administrador');
+        }
     }
 }

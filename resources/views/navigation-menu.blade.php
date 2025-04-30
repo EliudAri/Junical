@@ -13,21 +13,26 @@
 
                 <!-- Enlaces de Navegación -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    @can('dashboard')
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" class="flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @endcan
 
+                    @can('dashboardUsuario')
                     <x-nav-link href="{{ route('dashboardUsuario') }}" :active="request()->routeIs('dashboardUsuario')" class="flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @endcan
                     
                     <!-- NOVEDADES -->
+                    @can('calendario')
                     <div x-data="{ open: false }"
                         @mouseenter="open = true"
                         @mouseleave="open = false"
@@ -54,20 +59,26 @@
                             x-transition:leave-end="transform opacity-0 scale-95"
                             class="absolute z-50 mt-16 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                             <div class="py-1">
+                                @can('crearAreas')
                                 <a href="{{ route('crearAreas') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('crearAreas') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
                                     {{ __('Crear novedad') }}
                                 </a>
+                                @endcan
+                                @can('novedades')
                                 <a href="{{ route('novedades') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('novedades') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
                                     {{ __('Novedades') }}
                                 </a>
+                                @endcan
                             </div>
                         </div>
                     </div>
+                    @endcan
                     <!-- FIN NOVEDADES -->
 
                     <!-- INVENTARIO -->
+                    @can('inventarioEquipos')
                     <div x-data="{ open: false }"
                         @mouseenter="open = true"
                         @mouseleave="open = false"
@@ -94,30 +105,45 @@
                             x-transition:leave-end="transform opacity-0 scale-95"
                             class="absolute z-50 mt-16 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                             <div class="py-1">
+                                @can('create')
                                 <a href="{{ route('create') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('create') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
                                     {{ __('Crear Inventario') }}
                                 </a>
+                                @endcan
                             </div>
                         </div>
                     </div>
+                    @endcan
                     <!-- FIN INVENTARIO -->
 
-                    <x-nav-link href="{{ route('usuarios') }}" :active="request()->routeIs('usuarios')" class="flex items-center">
+                    @can('usuarios.index')
+                    <x-nav-link href="{{ route('usuarios.index') }}" :active="request()->routeIs('usuarios.index')" class="flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
                         {{ __('Usuarios') }}
                     </x-nav-link>
+                    @endcan
                     
+                    @can('CreacionUsuario')
                     <x-nav-link href="{{ route('CreacionUsuario') }}" :active="request()->routeIs('CreacionUsuario')" class="flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
                         {{ __('Creacion de Usuarios') }}
                     </x-nav-link>
+                    @endcan
 
-                    
+                    @can('roles.index')
+                    <x-nav-link href="{{ route('roles.index') }}" :active="request()->routeIs('roles.index')" class="flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        {{ __('Roles') }}
+                    </x-nav-link>
+                    @endcan
+
                 </div>
             </div>
 
@@ -253,76 +279,91 @@
     <!-- Menú de Navegación Responsivo -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
+            @can('dashboard')
             <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @endcan
 
+            @can('dashboardUsuario')
             <x-responsive-nav-link href="{{ route('dashboardUsuario') }}" :active="request()->routeIs('dashboardUsuario')">
                 <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
                 {{ __('Dashboard Usuario') }}
             </x-responsive-nav-link>
+            @endcan
 
             <!-- Calendario y Novedades -->
             <div class="pt-2 pb-3 space-y-1">
+                @can('calendario')
                 <x-responsive-nav-link href="{{ route('calendario') }}" :active="request()->routeIs(['calendario','crearAreas','novedades'])">
                     <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                     </svg>
                     {{ __('Calendario') }}
                 </x-responsive-nav-link>
-
+                @endcan
+                @can('crearAreas')
                 <x-responsive-nav-link href="{{ route('crearAreas') }}" :active="request()->routeIs('crearAreas')">
                     <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                     {{ __('Crear novedad') }}
                 </x-responsive-nav-link>
-
+                @endcan
+                @can('novedades')
                 <x-responsive-nav-link href="{{ route('novedades') }}" :active="request()->routeIs('novedades')">
                     <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                     </svg>
                     {{ __('Novedades') }}
                 </x-responsive-nav-link>
+                @endcan
             </div>
 
             <!-- Inventario -->
             <div class="pt-2 pb-3 space-y-1">
+                @can('inventarioEquipos')
                 <x-responsive-nav-link href="{{ route('inventarioEquipos') }}" :active="request()->routeIs(['inventarioEquipos','create'])">
                     <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                     {{ __('Inventario Equipos') }}
                 </x-responsive-nav-link>
-
+                @endcan
+                @can('create')
                 <x-responsive-nav-link href="{{ route('create') }}" :active="request()->routeIs('create')">
                     <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                     {{ __('Crear Inventario') }}
                 </x-responsive-nav-link>
+                @endcan
             </div>
 
             <!-- Usuarios -->
             <div class="pt-2 pb-3 space-y-1">
-                <x-responsive-nav-link href="{{ route('usuarios') }}" :active="request()->routeIs('usuarios')">
+                @can('usuarios.index')
+                <x-responsive-nav-link href="{{ route('usuarios.index') }}" :active="request()->routeIs('usuarios.index')">
                     <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                     {{ __('Usuarios') }}
                 </x-responsive-nav-link>
+                @endcan
 
+                @can('CreacionUsuario')
                 <x-responsive-nav-link href="{{ route('CreacionUsuario') }}" :active="request()->routeIs('CreacionUsuario')">
                     <svg class="w-5 h-5 mr-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                     {{ __('Creacion de Usuarios') }}
                 </x-responsive-nav-link>
+                @endcan
             </div>
         </div>
 

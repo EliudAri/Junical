@@ -5,6 +5,9 @@
                 <div class="card">
                     <div class="card-header">
                         <h2>Lista de Usuarios</h2>
+                        @can('usuarios.create')
+                        <a href="{{ route('usuarios.create') }}" class="btn btn-primary float-end">Crear Usuario</a>
+                        @endcan
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -19,6 +22,8 @@
                                         <th>Equipo Actual</th>
                                         <th>Creado</th>
                                         <th>Actualizado</th>
+                                        <th>Rol</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -38,6 +43,18 @@
                                         <td>{{ $user->current_team_id ?? 'Sin equipo' }}</td>
                                         <td>{{ date('d/m/Y H:i', strtotime($user->created_at)) }}</td>
                                         <td>{{ date('d/m/Y H:i', strtotime($user->updated_at)) }}</td>
+                                        <td>
+                                            @if($user->roles->count())
+                                                {{ $user->roles->pluck('name')->join(', ') }}
+                                            @else
+                                                Sin rol
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @can('usuarios.edit')
+                                            <a href="{{ route('usuarios.edit', $user) }}" class="btn btn-sm btn-warning">Editar</a>
+                                            @endcan
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
