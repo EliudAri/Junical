@@ -11,6 +11,8 @@ use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\CreacionUsuarioController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\HomeController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -21,15 +23,25 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    // FUNCION DASHBOARD SEGUN EL ROL DEL USUARIO
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $user = Auth::user();
+        if ($user && $user->hasRole('Administrador')) {
+            return view('dashboard');
+        } elseif ($user && $user->hasRole('User')) {
+            return view('menu.usuarioFinal');
+        } else {
+            abort(403, 'No tienes acceso a ningún dashboard.');
+        }
     })->middleware('can:dashboard')->name('dashboard');
 
+    // RUTA NOVEDADES
     Route::get('/novedades', function () {
         $areas = Area::all();
         return view('novedades', compact('areas'));
     })->middleware('can:novedades')->name('novedades');
 
+    // RUTA CALENDARIO
     Route::get('/calendario', function () {
         return view('calendario');
     })->middleware('can:calendario')->name('calendario');
@@ -113,6 +125,8 @@ Route::middleware([
     
 
     //-----------FIN RUTAS QUE MANEJAN LOS DATOS-----------
+
+    Route::get('/home', [HomeController::class, 'redirect'])->name('home');
 
 });
 
