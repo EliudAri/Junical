@@ -28,11 +28,16 @@
                                 </label>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                @foreach($permissions as $permission)
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="permissions[]" value="{{ $permission->name }}" class="form-checkbox h-5 w-5 text-blue-600 permiso-checkbox">
-                                        <span class="ml-2 text-gray-700">{{ $permission->name }}</span>
-                                    </label>
+                                @foreach($groupedPermissions as $category => $permissions)
+                                    <div class="mb-4">
+                                        <h4 class="font-semibold text-indigo-700 mb-2 text-base uppercase">{{ $category }}</h4>
+                                        @foreach($permissions as $permission)
+                                            <label class="flex items-center">
+                                                <input type="checkbox" name="permissions[]" value="{{ $permission->name }}" class="form-checkbox h-5 w-5 text-blue-600 permiso-checkbox">
+                                                <span class="ml-2 text-gray-700">{{ $permission->name }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
                                 @endforeach
                             </div>
                             @error('permissions')

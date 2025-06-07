@@ -9,10 +9,10 @@
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
             <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         </head>
-        <form method="POST" action="{{ route('areas.store') }}" enctype="multipart/form-data" id="yourFormId">
+        <form method="POST" action="{{ route('novedades.store') }}" enctype="multipart/form-data" id="yourFormId">
             @csrf
             <div class="form-group">
-                <label for="area">Nombre del Área</label>
+                <label for="area">Nombre de la Novedad</label>
                 <input type="text" class="form-control" id="area" name="area">
             </div>
 
@@ -86,11 +86,11 @@
 
     <script>
         // Mostrar alertas de SweetAlert2 en caso de errores
-        @if($errors->any())
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'error',
+        @if ($errors->any())
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
             title: '¡Error!',
             html: '<ul>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
             showConfirmButton: false,

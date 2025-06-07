@@ -2,29 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Area;
+use App\Models\Novedad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 
-class AreaController extends Controller
+class NovedadController extends Controller
 {
     public function index()
     {
         try {
-            $areas = Area::all();
-            return view('areas.index', compact('areas'));
+            $novedades = Novedad::all();
+            return view('novedades.index', compact('novedades'));
         } catch (\Exception $e) {
-            Log::error('Error en AreaController@index: ' . $e->getMessage());
-            return back()->with('error', 'Ha ocurrido un error al cargar las áreas.');
+            Log::error('Error en NovedadController@index: ' . $e->getMessage());
+            return back()->with('error', 'Ha ocurrido un error al cargar las novedades.');
         }
     }
 
     public function create()
     {
-        return view('areas.create');
+        return view('novedades.create');
     }
 
     public function store(Request $request)
@@ -43,12 +43,12 @@ class AreaController extends Controller
             
             if ($request->hasFile('imagenes')) {
                 foreach ($request->file('imagenes') as $imagen) {
-                    $imagenPath = $imagen->store('areas', 'public');
+                    $imagenPath = $imagen->store('novedades', 'public');
                     $imagenesPaths[] = $imagenPath;
                 }
             }
 
-            Area::create([
+            Novedad::create([
                 'area' => $request->area,
                 'torre' => $request->torre,
                 'piso' => $request->piso,
@@ -57,19 +57,19 @@ class AreaController extends Controller
                 'usuario_reportador' => Auth::user()->name
             ]);
 
-            return redirect()->route('novedades')->with('success', 'Área creada exitosamente');
+            return redirect()->route('novedades.index')->with('success', 'Novedad creada exitosamente');
         } catch (\Exception $e) {
-            Log::error('Error en AreaController@store: ' . $e->getMessage());
-            return back()->with('error', 'Ha ocurrido un error al crear el área.');
+            Log::error('Error en NovedadController@store: ' . $e->getMessage());
+            return back()->with('error', 'Ha ocurrido un error al crear la novedad.');
         }
     }
 
-    public function edit(Area $area)
+    public function edit(Novedad $novedad)
     {
-        return view('areas.edit', compact('area'));
+        return view('novedades.edit', compact('novedad'));
     }
 
-    public function update(Request $request, Area $area)
+    public function update(Request $request, Novedad $novedad)
     {
         $request->validate([
             'area' => 'required|string|max:255',
@@ -88,34 +88,34 @@ class AreaController extends Controller
 
         if ($request->hasFile('imagen')) {
             // Eliminar la imagen anterior si existe
-            if ($area->imagen && Storage::disk('public')->exists($area->imagen)) {
-                Storage::disk('public')->delete($area->imagen);
+            if ($novedad->imagen && Storage::disk('public')->exists($novedad->imagen)) {
+                Storage::disk('public')->delete($novedad->imagen);
             }
 
             // Guardar la nueva imagen
-            $imagenPath = $request->file('imagen')->store('areas', 'public');
+            $imagenPath = $request->file('imagen')->store('novedades', 'public');
             $datos['imagen'] = $imagenPath;
         }
 
-        $area->update($datos);
+        $novedad->update($datos);
 
-        return redirect()->route('areas.index')->with('success', 'Área actualizada exitosamente');
+        return redirect()->route('novedades.index')->with('success', 'Novedad actualizada exitosamente');
     }
 
-    public function destroy(Area $area)
+    public function destroy(Novedad $novedad)
     {
         // Eliminar la imagen del almacenamiento si existe
-        if ($area->imagen && Storage::disk('public')->exists($area->imagen)) {
-            Storage::disk('public')->delete($area->imagen);
+        if ($novedad->imagen && Storage::disk('public')->exists($novedad->imagen)) {
+            Storage::disk('public')->delete($novedad->imagen);
         }
 
-        $area->delete();
+        $novedad->delete();
 
-        return redirect()->route('areas.index')->with('success', 'Área eliminada exitosamente');
+        return redirect()->route('novedades.index')->with('success', 'Novedad eliminada exitosamente');
     }
 
-    public function show(Area $area)
+    public function show(Novedad $novedad)
     {
-        return view('areas.show', compact('area'));
+        return view('novedades.show', compact('novedad'));
     }
 } 

@@ -17,7 +17,21 @@ class RoleController extends Controller
     public function create()
     {
         $permissions = \Spatie\Permission\Models\Permission::all();
-        return view('roles.create', compact('permissions'));
+        $groupedPermissions = [];
+        foreach ($permissions as $permission) {
+            $parts = explode('.', $permission->name);
+            $category = $parts[0];
+            if (strtolower($category) === 'creacionusuarios' || strtolower($category) === 'creacionusuario') {
+                $category = 'creacionusuario';
+            }
+            if (strtolower($category) === 'crearnovedad' || strtolower($category) === 'novedad' || strtolower($category) === 'novedades') {
+                $category = 'novedades';
+            }
+            $groupedPermissions[$category][] = $permission;
+        }
+        return view('roles.create', [
+            'groupedPermissions' => $groupedPermissions
+        ]);
     }
 
     public function store(Request $request)
@@ -38,7 +52,22 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         $permissions = \Spatie\Permission\Models\Permission::all();
-        return view('roles.edit', compact('role', 'permissions'));
+        $groupedPermissions = [];
+        foreach ($permissions as $permission) {
+            $parts = explode('.', $permission->name);
+            $category = $parts[0];
+            if (strtolower($category) === 'creacionusuarios' || strtolower($category) === 'creacionusuario') {
+                $category = 'creacionusuario';
+            }
+            if (strtolower($category) === 'crearnovedad' || strtolower($category) === 'novedad' || strtolower($category) === 'novedades') {
+                $category = 'novedades';
+            }
+            $groupedPermissions[$category][] = $permission;
+        }
+        return view('roles.edit', [
+            'role' => $role,
+            'groupedPermissions' => $groupedPermissions
+        ]);
     }
 
     public function update(Request $request, Role $role)

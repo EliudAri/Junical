@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 
-                @include('areas.index', ['areas' => $areas])
+                @include('novedades.index', ['novedades' => $novedades])
             </div>
         </div>
     </div>

@@ -13,6 +13,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NovedadController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -37,8 +38,8 @@ Route::middleware([
 
     // RUTA NOVEDADES
     Route::get('/novedades', function () {
-        $areas = Area::all();
-        return view('novedades', compact('areas'));
+        $novedades = \App\Models\Novedad::all();
+        return view('novedades', compact('novedades'));
     })->middleware('can:novedades')->name('novedades');
 
     // RUTA CALENDARIO
@@ -51,9 +52,7 @@ Route::middleware([
     //-----------RUTAS PARA EL MENU, ESTO LLAMA A LAS VISTAS QUE SE CREAN EN LA CARPETA MENU-----------
 
     // DATO IMPORTANTE, DONDE ESTA EL ROUTE::GET ESE NOMBRE DE /crear-areas es peronalizable, LO QUE NO SE CAMBIA ES LA RUTA REAL QUE ES EL RETURN VIEW QUE ESE SI ES LA RUTA REAL, AH Y EL NOMBRE QUE SE LE COLOCA EN NAME crearAreas
-    Route::get('/crear-areas', function () {
-        return view('menu.CrearAreas');
-    })->middleware('can:crearAreas')->name('crearAreas');
+   
 
     Route::get('/crear-inventario', function () {
         return view('menu.CrearInventario');
@@ -77,21 +76,25 @@ Route::middleware([
         return view('menu.usuarioFinal');
     })->middleware('can:dashboardUsuario')->name('dashboardUsuario');
 
+    Route::get('/crear-novedad', function () {
+        return view('menu.CrearNovedad');
+    })->middleware('can:crearNovedad')->name('crearNovedad');
+
     //-----------FIN RUTAS PARA EL MENU-----------
 
 
 
     //-----------RUTAS QUE MANEJAN LOS DATOS COMO LOS METODOS DE CREATE, STORE, SHOW, EDIT, UPDATE, DESTROY, INDEX-----------
 
-    // Rutas para las novedades de las areas
-    Route::get('/areas/create', [AreaController::class, 'create'])->middleware('can:areas.create')->name('areas.create');
-    Route::post('/areas', [AreaController::class, 'store'])->middleware('can:areas.store')->name('areas.store');
-    Route::get('/areas/{id}', [AreaController::class, 'show'])->middleware('can:areas.show')->name('areas.show');
-    Route::get('/areas/{id}/edit', [AreaController::class, 'edit'])->middleware('can:areas.edit')->name('areas.edit');
-    Route::put('/areas/{id}', [AreaController::class, 'update'])->middleware('can:areas.update')->name('areas.update');
-    Route::delete('/areas/{id}', [AreaController::class, 'destroy'])->middleware('can:areas.destroy')->name('areas.destroy');
-    Route::get('/areas', [AreaController::class, 'index'])->middleware('can:areas.index')->name('areas.index');
-    // Fin rutas areas
+    // // Rutas para las novedades de las areas
+   
+
+    
+    Route::post('/novedades', [NovedadController::class, 'store'])->middleware('can:novedades.store')->name('novedades.store');
+    Route::get('/novedades/{novedad}/edit', [NovedadController::class, 'edit'])->middleware('can:novedades.edit')->name('novedades.edit');
+    // Route::put('/novedades/{novedad}', [NovedadController::class, 'update'])->middleware('can:novedades.update')->name('novedades.update');
+    // Route::delete('/novedades/{novedad}', [NovedadController::class, 'destroy'])->middleware('can:novedades.destroy')->name('novedades.destroy');
+    // // Fin rutas areas
 
     // Rutas para el calendario
     Route::get('/api/events', [CalendarEventController::class, 'index']);
@@ -105,9 +108,9 @@ Route::middleware([
     Route::get('/inventario', [InventarioController::class, 'index'])->middleware('can:inventario.index')->name('inventario.index');
     // FIN RUTAS INVENTARIO
 
-    Route::get('/creacionusuarios', [CreacionUsuarioController::class, 'create'])->middleware('can:creacionusuarios.create')->name('creacionusuarios.create');
+    // RUTAS CREACION USUARIOS
     Route::post('/creacionusuarios', [CreacionUsuarioController::class, 'store'])->middleware('can:creacionusuarios.store')->name('creacionusuarios.store');
-
+    // FIN RUTAS CREACION USUARIOS
     // Rutas para roles
     Route::get('/roles', [RoleController::class, 'index'])->middleware('can:roles.index')->name('roles.index');
     Route::get('/roles/create', [RoleController::class, 'create'])->middleware('can:roles.create')->name('roles.create');

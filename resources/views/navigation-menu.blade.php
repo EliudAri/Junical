@@ -59,8 +59,8 @@
                             x-transition:leave-end="transform opacity-0 scale-95"
                             class="absolute z-50 mt-16 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                             <div class="py-1">
-                                @can('crearAreas')
-                                <a href="{{ route('crearAreas') }}"
+                                @can('crearNovedad')
+                                <a href="{{ route('crearNovedad') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 border-l-4 {{ request()->routeIs('crearAreas') ? 'border-indigo-400 text-indigo-700 bg-indigo-50' : 'border-transparent' }}">
                                     {{ __('Crear novedad') }}
                                 </a>

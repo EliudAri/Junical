@@ -19,7 +19,6 @@
                                         <th>Email</th>
                                         <th>Email Verificado</th>
                                         <th>Foto de Perfil</th>
-                                        <th>Equipo Actual</th>
                                         <th>Creado</th>
                                         <th>Actualizado</th>
                                         <th>Rol</th>
@@ -34,13 +33,8 @@
                                         <td>{{ $user->email }}</td>
                                         <td>{{ $user->email_verified_at ? date('d/m/Y H:i', strtotime($user->email_verified_at)) : 'No verificado' }}</td>
                                         <td>
-                                            @if($user->profile_photo_path)
-                                            <img src="{{ Storage::url($user->profile_photo_path) }}" alt="Foto de perfil" class="rounded-circle" width="50">
-                                            @else
-                                            Sin foto
-                                            @endif
+                                            <img src="{{ $user->profile_photo_url }}" alt="Foto de perfil" class="rounded-circle" width="50">
                                         </td>
-                                        <td>{{ $user->current_team_id ?? 'Sin equipo' }}</td>
                                         <td>{{ date('d/m/Y H:i', strtotime($user->created_at)) }}</td>
                                         <td>{{ date('d/m/Y H:i', strtotime($user->updated_at)) }}</td>
                                         <td>
@@ -52,7 +46,7 @@
                                         </td>
                                         <td>
                                             @can('usuarios.edit')
-                                            <a href="{{ route('usuarios.edit', $user) }}" class="btn btn-sm btn-warning">Editar</a>
+                                            <a href="{{ route('usuarios.edit', $user) }}" class="btn btn-warning">Editar</a>
                                             @endcan
                                         </td>
                                     </tr>
